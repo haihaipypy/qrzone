@@ -238,8 +238,6 @@ npx wrangler secret put WEBHOOK_SECRET
 
 ## 已知限制
 
-**高级二维码接口（`/api/qr-enhanced`）目前只存记录，不出特殊效果。** 前端「高级功能」页面调用的 `animated` 与 `with-logo` 接口会正常写入数据并返回 `qrUrl`，但取图时走的是标准二维码生成器，动画帧和 Logo 参数没有被应用。原因是对应的 `createAnimatedQRCode` / `createQRWithLogo` 实现依赖 `DOMParser`，而 Workers 运行时没有 DOM——直接接线会在运行时报错。真正的动画 GIF 由前端用 `gif.js` 生成，Logo 样式也由前端 `qr-code-styling` 渲染，这两条路径都正常。
-
 **AR 二维码是占位实现。** `src/routes/ar.ts` 里的体验地址写的是 `ar-cdn.example.com`，需要替换成你自己的 3D 模型查看器才能用。
 
 ---

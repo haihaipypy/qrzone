@@ -8,7 +8,6 @@ import keys from './routes/keys'
 import profile from './routes/profile'
 import teams from './routes/teams'
 import webhooks from './routes/webhooks'
-import qrEnhanced from './routes/qrEnhanced'
 import ar from './routes/ar'
 import proxyImage from './routes/proxyImage'
 
@@ -47,7 +46,6 @@ app.route('/api/keys', keys)
 app.route('/api/profile', profile)
 app.route('/api/teams', teams)
 app.route('/api/webhooks', webhooks)
-app.route('/api/qr-enhanced', qrEnhanced)
 app.route('/api/ar', ar)
 app.route('/api/proxy-image', proxyImage)
 app.route('/q', shortlink)

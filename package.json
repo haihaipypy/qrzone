@@ -23,7 +23,6 @@
     "wrangler": "^4.67.1"
   },
   "dependencies": {
-    "hono": "^4.6.0",
-    "qrcode": "^1.5.3"
+    "hono": "^4.6.0"
   }
 }
