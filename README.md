@@ -38,18 +38,24 @@ binding = "AUTH_KV"
 
 ## 备选：用 GitHub Actions 部署
 
-习惯从自己仓库推送部署的话：
+习惯从自己仓库推送部署的话，先启用工作流：
 
 1. Fork 本项目
-2. 在 Cloudflare 后台创建一个 API Token，模板选 **Edit Cloudflare Workers**
-3. 到仓库 **Settings → Secrets and variables → Actions**，添加两个 secret：
+2. 把 `docs/deploy-workflow.example.yml` 复制成 `.github/workflows/deploy.yml`
+
+   > 工作流故意以示例形式提供。如果它一开箱就在 `.github/workflows/` 里，
+   > fork 后的第一次 push 会立刻触发部署，而你还没配 secret，必定失败。
+   > 等你配好再放进去，第一次跑就是成功的。
+
+3. 在 Cloudflare 后台创建一个 API Token，模板选 **Edit Cloudflare Workers**
+4. 到仓库 **Settings → Secrets and variables → Actions**，添加两个 secret：
 
    | Secret | 从哪里拿 |
    | --- | --- |
    | `CLOUDFLARE_API_TOKEN` | 上一步创建的 Token |
    | `CLOUDFLARE_ACCOUNT_ID` | Cloudflare 后台右侧边栏的 Account ID |
 
-4. 推送代码到 `main` 分支，或在 Actions 页面手动触发 **Deploy to Cloudflare Workers**
+5. 推送代码到 `main` 分支，或在 Actions 页面手动触发 **Deploy to Cloudflare Workers**
 
 之后每次 push 都会自动重新部署。
 
