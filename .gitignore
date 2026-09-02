@@ -33,3 +33,6 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
+
+# WorkBuddy 工作区数据
+.workbuddy/
