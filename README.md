@@ -98,7 +98,7 @@ npm run dev            # 先构建前端，再由 Worker 托管，统一访问 8
 | 扫描统计 | 记录扫描次数、时间、来源 IP |
 | 批量生成 | 一次输入多条 URL，批量出码 |
 | ZIP 下载 | 批量生成后打包下载 PNG |
-| 动画二维码 | 生成彩色循环动画的 SVG 二维码 |
+| 动画 GIF | 由前端生成彩色循环动画的二维码 GIF |
 | 文件夹分类 | 给二维码打标签，仪表盘一键过滤 |
 | 自定义短链域名 | 设置页面配置自己的域名作为短链前缀 |
 | 团队与权限 | 创建团队、邀请成员、按角色控制增删改查 |
@@ -224,6 +224,14 @@ npx wrangler secret put WEBHOOK_SECRET
 
 **如何查看线上日志**
 `npx wrangler tail`
+
+---
+
+## 已知限制
+
+**高级二维码接口（`/api/qr-enhanced`）目前只存记录，不出特殊效果。** 前端「高级功能」页面调用的 `animated` 与 `with-logo` 接口会正常写入数据并返回 `qrUrl`，但取图时走的是标准二维码生成器，动画帧和 Logo 参数没有被应用。原因是对应的 `createAnimatedQRCode` / `createQRWithLogo` 实现依赖 `DOMParser`，而 Workers 运行时没有 DOM——直接接线会在运行时报错。真正的动画 GIF 由前端用 `gif.js` 生成，Logo 样式也由前端 `qr-code-styling` 渲染，这两条路径都正常。
+
+**AR 二维码是占位实现。** `workers/src/routes/ar.ts` 里的体验地址写的是 `ar-cdn.example.com`，需要替换成你自己的 3D 模型查看器才能用。
 
 ---
 
