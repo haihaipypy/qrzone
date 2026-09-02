@@ -6,105 +6,46 @@
 
 ---
 
-## 部署
+## 部署（Connect-to-Git · 操作最少）
 
-> 整个流程约 5 分钟，**成功率最高**的本地部署方式。一次部署后所有数据落在你自己的 Cloudflare 账户里。
-
-### 前置要求
-
-- Node.js 20+
-- 一个 Cloudflare 账户（[免费注册](https://dash.cloudflare.com/sign-up)）
-- 一个 GitHub 账户
+> 全部操作都在 **Cloudflare Dashboard 一个页面里点击完成**，不需要任何 GitHub secrets、API Token 或本地 wrangler。首次部署约 5 分钟，成功后 `git push` 自动触发重新部署。
 
 ### 步骤
 
-#### 1. Fork 本仓库
+1. **登录 Cloudflare Dashboard**（[dash.cloudflare.com](https://dash.cloudflare.com/)，没账号先免费注册）
+2. **左侧栏 → Workers & Pages → 点 Create application**
+3. **选 Workers 标签 → Import a Git repository**
+4. **Connect to Git → 选 GitHub → 完成 OAuth 授权**（弹窗点 Authorize 即可）
+5. **选你的 fork 仓库**：`<你的 GitHub 用户名>/qrzone`
+6. **Build settings 已默认填好**：
+    - Build command：`npm run build`
+    - Deploy command：`npx wrangler deploy`
+    - 其余不动
+7. **点页面底部 Deploy and save**，等进度条跑完
 
-在 GitHub 上打开 [`haihaipypy/qrzone`](https://github.com/haihaipypy/qrzone)，点右上角 **Fork** → 选你的账户。
+完成后 Cloudflare 会给你一个 `https://qrzone.<你的子域>.workers.dev` 的地址，打开就能用。
 
-完成后你的账户下会出现 `<你的名字>/qrzone`。
+### 第一次之后
 
-#### 2. Clone 到本地
-
-```bash
-git clone https://github.com/<你的名字>/qrzone.git
-cd qrzone
-```
-
-#### 3. 安装依赖
-
-```bash
-npm install
-```
-
-#### 4. 登录 Cloudflare
+以后改代码只需要：
 
 ```bash
-npx wrangler login
-```
-
-浏览器会弹出 Cloudflare 授权页 → 点 **Allow** → 命令行提示 `Successfully logged in` 即完成。
-
-> 这一步是 OAuth 授权，**不会创建任何资源**。后续的 `wrangler deploy` 才会创建。
-
-#### 5. 创建两个 KV 命名空间
-
-```bash
-npx wrangler kv namespace create QR_KV
-npx wrangler kv namespace create AUTH_KV
-```
-
-每条命令会返回一行 `id = "..."`，把两个 id **填进 `wrangler.toml`**（替换下面占位的 `__FILL_IN_QR_KV_ID__` 和 `__FILL_IN_AUTH_KV_ID__`）：
-
-```toml
-[[kv_namespaces]]
-binding = "QR_KV"
-id = "第一个返回的 id"
-
-[[kv_namespaces]]
-binding = "AUTH_KV"
-id = "第二个返回的 id"
-```
-
-> **为什么手动创建**：`wrangler.toml` 不写 id 直接 `wrangler deploy` 也能跑（wrangler 会自动 provision 并把 id 写回本地 `wrangler.toml`），效果一样。手动创建的优势是：  
-> 1. 你**显式拥有**这两个 KV 命名空间，Dashboard 里能看到命名一致
-> 2. 部署时 wrangler 不会自动改 `wrangler.toml`，更干净  
-> 两条路都行，下面给手动路径（更可控）。
-
-#### 6. 构建并部署
-
-```bash
-npm run build
-npx wrangler deploy
-```
-
-构建跑完后部署约 5–10 秒，命令成功后会打印：
-
-```
-Published qrzone (X.XX sec)
-https://qrzone.<你的子域>.workers.dev
-```
-
-打开这个 `*.workers.dev` 地址即可使用。
-
-#### 7. 把 KV id 提交到 fork
-
-填好 id 的 `wrangler.toml` 提交到 fork 仓库，以后部署就不用再填：
-
-```bash
-git add wrangler.toml
-git commit -m "chore: 填入 KV namespace id"
 git push origin main
 ```
 
-### 后续更新代码
+Cloudflare 自动检测 fork 仓库的 `main` 分支变化 → 自动 build + deploy，**你什么都不用做**。两个 KV 命名空间会在首次部署时自动创建，Cloudflare 自己记住 id，以后永远复用。
 
-```bash
-git pull                 # 拉取本仓库更新（如果你想同步原仓库改动）
-npm install              # 依赖有变才需要
-npm run build
-npx wrangler deploy
-```
+### 为什么是这个方案
+
+| 维度 | Connect-to-Git（这个方案）| GitHub Actions（替代）|
+|---|---|---|
+| 平台切换 | **0 次**（全程在 CF Dashboard）| 2 次（CF 拿 token → GitHub 配 secret）|
+| 鼠标点击 | 7 步 | 6 步 |
+| 复制粘贴凭据 | **0 个** | 1 个 API Token + 2 个 GitHub Secrets |
+| 出错断点 | 1 个（OAuth 授权）| 4 个（KV id / token / secret 名 / workflow 字段）|
+| 后续 push 行为 | 完全一样 | 完全一样 |
+
+**操作最少 = 平台切换最少 = 凭据最少 = 出错最少**。
 
 ---
 
