@@ -1,0 +1,24 @@
+{
+  "name": "qrzone",
+  "version": "1.0.0",
+  "private": true,
+  "description": "二维码批量生成与动态二维码管理平台，单个 Cloudflare Worker 托管前端与 API",
+  "workspaces": [
+    "frontend",
+    "workers"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "npm run build --workspace=qrzone-frontend",
+    "deploy": "npm run build && wrangler deploy",
+    "dev": "npm run build && wrangler dev",
+    "dev:frontend": "npm run dev --workspace=qrzone-frontend",
+    "dev:worker": "wrangler dev",
+    "cf-typegen": "wrangler types"
+  },
+  "devDependencies": {
+    "wrangler": "^4.67.1"
+  }
+}

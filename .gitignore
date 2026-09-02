@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Next.js
+frontend/.next/
+frontend/out/
+frontend/.vercel
+frontend/.next/cache/
+frontend/.vercel/
+
+# Wrangler
+.wrangler/
+workers/.wrangler/
+workers/dist/
+.dev.vars
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
