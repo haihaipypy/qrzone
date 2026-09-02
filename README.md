@@ -4,47 +4,38 @@
 
 ---
 
-## 一键部署（推荐方式）
+## 一键部署（Deploy to Cloudflare 按钮）
 
-> **不到 5 分钟**——跟着下面点鼠标就行，不需要装任何工具。
+> **整个项目生命周期，按钮只点这一次**——剩下的 Cloudflare 全帮你做完。
 
-1. 登录 [Cloudflare Dashboard](https://dash.cloudflare.com/)（没有账号先免费注册）
-2. 左侧栏 → **Workers & Pages** → 点 **Create application**
-3. 标签切到 **Workers**，选 **Import a Git repository**
-4. **Connect to Git** → 选 **GitHub** → 授权并选仓库 `haihaipypy/qrzone`（如果你 fork 过，选你自己的 fork）
-5. 看到 **Build settings** 页面后：
-   - **Build command**：`npm run build`（已自动填好）
-   - **Deploy command**：`npx wrangler deploy`（已自动填好）
-   - 其余不动
-6. 点页面底部的 **Deploy and save**
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/haihaipypy/qrzone)
 
-进度条跑完即可。访问 Cloudflare 给你的 `*.workers.dev` 子域名就能用。
+点上面的按钮，登录 Cloudflare → 按提示授权 GitHub → 几秒后进度条跑完，你的二维码平台就上线了，访问 `*.workers.dev` 子域名就能用。
 
-> **为什么推荐这个方式？**
-> - KV 命名空间会自动创建 **一对**，Cloudflare 把它们的 id 记在 dashboard，**以后 deploy 永远复用这对 KV**，不会重复建。
-> - 以后你 `git push` 到 `main`，Cloudflare 自动重新 build + deploy，无需任何额外操作。
+**为什么按钮只点一次就够了？**
+Cloudflare 会把仓库 fork 到你的 GitHub 账户下（比如 `<你的名字>/qrzone`），并在 fork 上启动 Workers Builds。**后续你在 fork 仓库上 push 代码，Cloudflare 自动重新构建并部署，永远复用同一对 KV 命名空间**——不会重复创建。
+
+如果想自己改代码、做二次开发：
+1. 打开 GitHub 账户下 fork 的那个仓库（`你的名字/qrzone`）
+2. `git clone` 到本地 → 改代码 → `git push` 到 `main`
+3. Cloudflare Dashboard → Workers & Pages → 你的项目 → Deployments，能看到每次 push 触发的构建
 
 ---
 
 ## 其他部署方式
 
-### 方式 B：Deploy to Cloudflare 按钮
+### 方式 A：Cloudflare Dashboard Connect-to-Git
 
-按钮适合「只想部署、不想碰 dashboard 的配置」的零接触场景。
+适合「已经在 Dashboard 里手动部署过，现在想把代码接上 GitHub 让 push 自动触发」的衔接场景：
 
-[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/haihaipypy/qrzone)
+1. 登录 [Cloudflare Dashboard](https://dash.cloudflare.com/)
+2. 左侧栏 → **Workers & Pages** → 点 **Create application**
+3. 标签切到 **Workers**，选 **Import a Git repository**
+4. **Connect to Git** → 选 **GitHub** → 授权并选仓库 `haihaipypy/qrzone`（如果 fork 过，选你自己的 fork）
+5. **Build settings** 页面里 Build / Deploy 命令已自动填好（`npm run build` + `npx wrangler deploy`），其余不动
+6. 点 **Deploy and save**
 
-> ⚠️ **重点：在弹出的向导里，"创建和部署"步骤必须勾选「Create a new Git repository（创建专用仓库）」。**
->
-> 这个选项关系到 KV id 写到哪里：
-> - **勾选**：Cloudflare 把仓库 fork 到你 GitHub 账号下（仓库名类似 `<你的名字>/qrzone`），自动 provision 出的 KV id 写回**这个 fork** 的 `wrangler.toml`，**以后再点按钮永远复用同一对 KV**。
-> - **不勾选**：KV id 只写到 Cloudflare dashboard，**不回写你的 GitHub 仓库**，下次点按钮又会被识别成"无 id"→ 再创建一对新的 KV，**你账户里的 KV 会无限重复**。
->
-> 没有"几选几"的步骤引导——向导打开后**第一屏**通常就让你选：直接勾选。
-
-按完按钮授权 GitHub → 确认项目名 → 等进度条 → 完成。
-
-### 方式 C：GitHub Actions
+### 方式 B：GitHub Actions
 
 习惯 push 即部署 / 想用 CI 流程的话：
 
@@ -261,7 +252,8 @@ npx wrangler secret put WEBHOOK_SECRET
 `npx wrangler tail`
 
 **账户里看到了多个 `qrzone-QR_KV` / `qrzone-AUTH_KV` KV 命名空间**
-这是 Deploy to Cloudflare 按钮的副作用：每次点按钮 Cloudflare 都会自动建一对新 KV（id 不回写到你的源仓库）。去 Cloudflare Dashboard → Storage → KV，**删掉重复的**，只留一对即可。如果想从此再不重复，请改走「一键部署（推荐方式）」里的 Connect-to-Git 流程，或在 Deploy 按钮的向导里勾选「Create a new Git repository」。
+这是因为你**多次点击了 Deploy to Cloudflare 按钮**——按钮每次都走一遍 fork + 全新部署流程，wrangler 检测到 fork 仓库的 `wrangler.toml` 没 KV id（Cloudflare 不回写 id 到 GitHub），就又自动建一对。**正确做法是按钮只点一次**，后续改代码通过 `git push` 到 fork 仓库触发自动部署，会复用已存在的 KV。
+清理重复项：去 Cloudflare Dashboard → Storage → KV，删掉多余的、只留一对即可。
 
 ---
 
