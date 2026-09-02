@@ -137,14 +137,17 @@ qrzone/
 │   ├── src/app/              # 页面路由
 │   ├── src/components/qr/    # 二维码相关组件
 │   └── src/lib/api.ts        # API 客户端
-├── workers/                  # Cloudflare Workers 后端
-│   └── src/
-│       ├── index.ts          # 入口，路由注册与 CORS
-│       ├── lib/              # 类型定义与二维码生成
-│       └── routes/           # auth / qr / shortlink / keys / profile / teams / webhooks / ar / proxyImage
+├── src/                      # Cloudflare Workers 后端（仓库根目录，部署契约所在）
+│   ├── index.ts              # 入口，路由注册与 CORS
+│   ├── lib/                  # 类型定义与二维码生成
+│   ├── middleware/           # 鉴权中间件
+│   └── routes/               # auth / qr / shortlink / keys / profile / teams / webhooks / ar / proxyImage
 ├── .github/workflows/        # GitHub Actions 部署
-└── wrangler.toml             # 唯一的部署配置
+├── wrangler.toml             # 唯一的部署配置（位于仓库根）
+└── package.json              # 根构建脚本：build 委托 frontend，deploy 跑 wrangler
 ```
+
+> 仓库刻意保持「扁平」：Worker 入口与 `wrangler.toml` 都在根目录，因此 Cloudflare 的一键部署按钮能直接在根目录找到完整的部署契约，无需处理 monorepo 子目录隔离问题。
 
 ---
 
@@ -237,7 +240,7 @@ npx wrangler secret put WEBHOOK_SECRET
 
 **高级二维码接口（`/api/qr-enhanced`）目前只存记录，不出特殊效果。** 前端「高级功能」页面调用的 `animated` 与 `with-logo` 接口会正常写入数据并返回 `qrUrl`，但取图时走的是标准二维码生成器，动画帧和 Logo 参数没有被应用。原因是对应的 `createAnimatedQRCode` / `createQRWithLogo` 实现依赖 `DOMParser`，而 Workers 运行时没有 DOM——直接接线会在运行时报错。真正的动画 GIF 由前端用 `gif.js` 生成，Logo 样式也由前端 `qr-code-styling` 渲染，这两条路径都正常。
 
-**AR 二维码是占位实现。** `workers/src/routes/ar.ts` 里的体验地址写的是 `ar-cdn.example.com`，需要替换成你自己的 3D 模型查看器才能用。
+**AR 二维码是占位实现。** `src/routes/ar.ts` 里的体验地址写的是 `ar-cdn.example.com`，需要替换成你自己的 3D 模型查看器才能用。
 
 ---
 

@@ -6,7 +6,7 @@
 # 参考 https://developers.cloudflare.com/workers/wrangler/configuration/#automatic-provisioning
 
 name = "qrzone"
-main = "workers/src/index.ts"
+main = "./src/index.ts"
 compatibility_date = "2025-09-01"
 compatibility_flags = ["nodejs_compat"]
 

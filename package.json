@@ -4,8 +4,7 @@
   "private": true,
   "description": "二维码批量生成与动态二维码管理平台，单个 Cloudflare Worker 托管前端与 API",
   "workspaces": [
-    "frontend",
-    "workers"
+    "frontend"
   ],
   "engines": {
     "node": ">=20"
@@ -19,6 +18,12 @@
     "cf-typegen": "wrangler types"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260831.1",
+    "typescript": "^5.7.0",
     "wrangler": "^4.67.1"
+  },
+  "dependencies": {
+    "hono": "^4.6.0",
+    "qrcode": "^1.5.3"
   }
 }
