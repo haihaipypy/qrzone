@@ -1,44 +1,52 @@
 # qrzone · 二维码管理平台
 
-二维码批量生成与动态二维码管理工具。前端与后端合并运行在**同一个 Cloudflare Worker** 上，点一下按钮即可完成部署，全程免费、无需服务器。
+二维码批量生成与动态二维码管理工具。前端与后端合并运行在**同一个 Cloudflare Worker** 上，零配置部署，全程免费、无需服务器。
 
-## 一键部署
+---
+
+## 一键部署（推荐方式）
+
+> **不到 5 分钟**——跟着下面点鼠标就行，不需要装任何工具。
+
+1. 登录 [Cloudflare Dashboard](https://dash.cloudflare.com/)（没有账号先免费注册）
+2. 左侧栏 → **Workers & Pages** → 点 **Create application**
+3. 标签切到 **Workers**，选 **Import a Git repository**
+4. **Connect to Git** → 选 **GitHub** → 授权并选仓库 `haihaipypy/qrzone`（如果你 fork 过，选你自己的 fork）
+5. 看到 **Build settings** 页面后：
+   - **Build command**：`npm run build`（已自动填好）
+   - **Deploy command**：`npx wrangler deploy`（已自动填好）
+   - 其余不动
+6. 点页面底部的 **Deploy and save**
+
+进度条跑完即可。访问 Cloudflare 给你的 `*.workers.dev` 子域名就能用。
+
+> **为什么推荐这个方式？**
+> - KV 命名空间会自动创建 **一对**，Cloudflare 把它们的 id 记在 dashboard，**以后 deploy 永远复用这对 KV**，不会重复建。
+> - 以后你 `git push` 到 `main`，Cloudflare 自动重新 build + deploy，无需任何额外操作。
+
+---
+
+## 其他部署方式
+
+### 方式 B：Deploy to Cloudflare 按钮
+
+按钮适合「只想部署、不想碰 dashboard 的配置」的零接触场景。
 
 [![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/haihaipypy/qrzone)
 
-1. 点击上面的按钮
-2. 授权 Cloudflare 访问你的 GitHub，它会把本项目复制到你的账号下
-3. 确认项目名称，点 **Deploy**
+> ⚠️ **重点：在弹出的向导里，"创建和部署"步骤必须勾选「Create a new Git repository（创建专用仓库）」。**
+>
+> 这个选项关系到 KV id 写到哪里：
+> - **勾选**：Cloudflare 把仓库 fork 到你 GitHub 账号下（仓库名类似 `<你的名字>/qrzone`），自动 provision 出的 KV id 写回**这个 fork** 的 `wrangler.toml`，**以后再点按钮永远复用同一对 KV**。
+> - **不勾选**：KV id 只写到 Cloudflare dashboard，**不回写你的 GitHub 仓库**，下次点按钮又会被识别成"无 id"→ 再创建一对新的 KV，**你账户里的 KV 会无限重复**。
+>
+> 没有"几选几"的步骤引导——向导打开后**第一屏**通常就让你选：直接勾选。
 
-剩下的全是自动的：Cloudflare 读取仓库里的 `wrangler.toml`，自动创建所需的 KV 命名空间、构建前端、部署 Worker。
+按完按钮授权 GitHub → 确认项目名 → 等进度条 → 完成。
 
-**你不需要**：装 Node.js、装 Wrangler、手动建 KV、填 KV id、配后端地址、配跨域白名单。
+### 方式 C：GitHub Actions
 
-部署完成后访问 `https://<你的项目名>.workers.dev`，注册账号即可使用。
-
----
-
-### 为什么不用手动建 KV
-
-传统教程让你先执行 `wrangler kv:namespace create` 再把 id 抄进配置文件。现在不需要了——本项目的 `wrangler.toml` 里只声明 binding，不写 id：
-
-```toml
-[[kv_namespaces]]
-binding = "QR_KV"
-
-[[kv_namespaces]]
-binding = "AUTH_KV"
-```
-
-首次部署时 Wrangler 会自动创建这两个命名空间并把 id 写回配置文件。这意味着同一份配置可以安全地分享给任何人，每个人的数据都落在自己的账号里。
-
-> 用 `npm run deploy` 本地部署后，`wrangler.toml` 会多出两行 `id`。这是 Wrangler 写回的结果，不想提交的话执行 `git checkout wrangler.toml` 还原即可，不影响已创建的 KV。
-
----
-
-## 备选：用 GitHub Actions 部署
-
-习惯从自己仓库推送部署的话，先启用工作流：
+习惯 push 即部署 / 想用 CI 流程的话：
 
 1. Fork 本项目
 2. 把 `docs/deploy-workflow.example.yml` 复制成 `.github/workflows/deploy.yml`
@@ -58,6 +66,24 @@ binding = "AUTH_KV"
 5. 推送代码到 `main` 分支，或在 Actions 页面手动触发 **Deploy to Cloudflare Workers**
 
 之后每次 push 都会自动重新部署。
+
+---
+
+### 为什么不用手动建 KV
+
+`wrangler.toml` 里只声明 binding，不写 id：
+
+```toml
+[[kv_namespaces]]
+binding = "QR_KV"
+
+[[kv_namespaces]]
+binding = "AUTH_KV"
+```
+
+部署时 Wrangler 会自动创建这两个命名空间。这意味着同一份配置可以安全地分享给任何人，每个人的数据都落在自己的账号里。
+
+> 如果你本地跑过 `wrangler deploy`，`wrangler.toml` 会多出两行 `id`。这是 Wrangler 把自动创建出的 KV id 写回来的结果，不想提交的话执行 `git checkout wrangler.toml` 还原即可，**已创建的 KV 不受影响**。
 
 ---
 
@@ -139,15 +165,15 @@ qrzone/
 │   └── src/lib/api.ts        # API 客户端
 ├── src/                      # Cloudflare Workers 后端（仓库根目录，部署契约所在）
 │   ├── index.ts              # 入口，路由注册与 CORS
-│   ├── lib/                  # 类型定义与二维码生成
+│   ├── lib/                  # 类型定义与共享工具
 │   ├── middleware/           # 鉴权中间件
 │   └── routes/               # auth / qr / shortlink / keys / profile / teams / webhooks / ar / proxyImage
-├── .github/workflows/        # GitHub Actions 部署
+├── .github/workflows/        # GitHub Actions 部署（可选）
 ├── wrangler.toml             # 唯一的部署配置（位于仓库根）
 └── package.json              # 根构建脚本：build 委托 frontend，deploy 跑 wrangler
 ```
 
-> 仓库刻意保持「扁平」：Worker 入口与 `wrangler.toml` 都在根目录，因此 Cloudflare 的一键部署按钮能直接在根目录找到完整的部署契约，无需处理 monorepo 子目录隔离问题。
+> 仓库刻意保持「扁平」：Worker 入口与 `wrangler.toml` 都在根目录，因此 Cloudflare 的一键部署按钮和 Dashboard Connect-to-Git 都能直接在根目录找到完整的部署契约，无需处理 monorepo 子目录隔离问题。
 
 ---
 
@@ -220,7 +246,7 @@ npx wrangler secret put WEBHOOK_SECRET
 检查 `wrangler.toml` 里 `run_worker_first` 是否包含 `/q/*`。少了这一项，短链请求会被静态资源拦截。
 
 **登录后访问 API 返回 401**
-前端把 token 存在 localStorage。执行 `localStorage.removeItem('session_token')` 后重新登录。
+前端把 token 存 localStorage。执行 `localStorage.removeItem('session_token')` 后重新登录。
 
 **部署后页面能开，但 API 全 404**
 同上，检查 `run_worker_first` 是否包含 `/api/*`。
@@ -233,6 +259,9 @@ npx wrangler secret put WEBHOOK_SECRET
 
 **如何查看线上日志**
 `npx wrangler tail`
+
+**账户里看到了多个 `qrzone-QR_KV` / `qrzone-AUTH_KV` KV 命名空间**
+这是 Deploy to Cloudflare 按钮的副作用：每次点按钮 Cloudflare 都会自动建一对新 KV（id 不回写到你的源仓库）。去 Cloudflare Dashboard → Storage → KV，**删掉重复的**，只留一对即可。如果想从此再不重复，请改走「一键部署（推荐方式）」里的 Connect-to-Git 流程，或在 Deploy 按钮的向导里勾选「Create a new Git repository」。
 
 ---
 
