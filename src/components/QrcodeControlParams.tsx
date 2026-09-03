@@ -54,6 +54,7 @@ import {
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { BACKGROUND_IMG } from "@uiw/react-color-alpha";
 import { Dices, LucideUpload } from "lucide-react";
+import { useLocale } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { trackEvent } from "@/components/TrackComponents";
 import { Badge } from "./ui/badge";
@@ -183,18 +184,35 @@ export function ParamTextControl<P extends FieldValues>(
 export function ParamPromptControl<P extends FieldValues>(
   props: ControlCommonProps<P> & ParamPromptControlProps,
 ) {
-  const [prompts, setPrompts] = useState<string[]>([])
+  // 按当前界面语言加载对应语种的提示词库
+  const locale = useLocale();
+  const [prompts, setPrompts] = useState<string[]>([]);
+  const lastIndexRef = useRef<number>(-1);
+
   useEffect(() => {
-    import('@/lib/qrbtf_lib/prompts').then((lib) => {
-      setPrompts(lib.prompts)
-    })
-  }, [])
+    let cancelled = false;
+    import("@/lib/qrbtf_lib/prompts").then((lib) => {
+      if (cancelled) return;
+      setPrompts(lib.getPrompts(locale));
+      lastIndexRef.current = -1;
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [locale]);
 
   const handleRandomize = () => {
-    if (prompts.length > 0) {
-      const randomIndex = Math.floor(Math.random() * prompts.length);
-      props.field.onChange(prompts[randomIndex]);
+    if (prompts.length === 0) return;
+    let nextIndex = 0;
+    if (prompts.length > 1) {
+      // 连续随机时避免抽到与上一条完全相同的提示词
+      do {
+        nextIndex = Math.floor(Math.random() * prompts.length);
+      } while (nextIndex === lastIndexRef.current);
     }
+    lastIndexRef.current = nextIndex;
+    trackEvent("randomize_prompt", { locale });
+    props.field.onChange(prompts[nextIndex]);
   };
 
   return (
@@ -208,7 +226,7 @@ export function ParamPromptControl<P extends FieldValues>(
             onClick={handleRandomize}
           >
             <Dices className="w-4 h-4 mr-1" />
-            Randomize
+            {props.config?.randomizeLabel || "Randomize"}
           </Badge>
         </div>
       </div>

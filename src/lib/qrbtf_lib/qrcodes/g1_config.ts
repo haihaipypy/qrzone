@@ -22,6 +22,7 @@ export function useG1Params() {
       desc: t("prompt.desc"),
       config: {
         placeholder: t("prompt.placeholder"),
+        randomizeLabel: t("prompt.randomize"),
       },
     },
     {

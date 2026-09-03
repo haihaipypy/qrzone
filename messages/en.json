@@ -192,7 +192,8 @@
       "prompt": {
         "label": "Style prompt",
         "desc": "Describe the style you want, in any language. Leave empty for the default style.",
-        "placeholder": "e.g. cyberpunk neon night / ink wash painting / Van Gogh starry night..."
+        "placeholder": "e.g. cyberpunk neon night / ink wash painting / Van Gogh starry night...",
+        "randomize": "Randomize"
       },
       "size": {
         "label": "Output size",

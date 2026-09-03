@@ -46,6 +46,7 @@ export interface ParamPromptControlProps {
   config?: {
     placeholder?: string;
     maxLength?: number;
+    randomizeLabel?: string;
     actionSlot?: (props: ActionSlotProps) => React.ReactNode;
   };
 }
