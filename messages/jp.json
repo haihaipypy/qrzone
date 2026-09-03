@@ -1,0 +1,226 @@
+{
+  "metadata": {
+    "title": {
+      "template": "%s - QRzone",
+      "default": "QRzone - AI QR コードジェネレーター"
+    },
+    "description": "AI & パラメトリック QR コードジェネレーター。",
+    "keywords": {
+      "0": "QR Code",
+      "1": "qrcode",
+      "2": "AI QR Code",
+      "3": "AI qrcode",
+      "4": "QRコード",
+      "5": "QRzone"
+    }
+  },
+  "index": {
+    "hero": {
+      "title": "QRzone",
+      "subtitle": "AI & パラメトリック QR コードジェネレーター。",
+      "url": "URL リンク",
+      "scan": "スキャン"
+    },
+    "style": {
+      "title": "スタイル",
+      "subtitle": "左右にスワイプしてさらに表示"
+    },
+    "params": {
+      "param_name": "パラメータ名",
+      "generate": "生成",
+      "url_too_long": "URL は 150 文字未満である必要があります。",
+      "qrcode_output": "QR コード出力",
+      "download": "ダウンロード"
+    },
+    "qa": {
+      "title": "よくある質問",
+      "subtitle": "",
+      "0": {
+        "q": "使い方は？",
+        "a": "上の入力欄にリンクを入力し、好きなスタイルを選んでパラメータを調整し、生成をクリックします。AI 生成には Agnes API キーが必要です。"
+      },
+      "1": {
+        "q": "QRzone とは？",
+        "a": "QRzone は無料・オープンソースの QR コード美化ツールです。10 種類以上のパラメトリックスタイルに加え、Agnes Image 2.5 Flash モデルによる AI アーティスティック QR コード生成に対応しています。データは一切保存されません。"
+      },
+      "2": {
+        "q": "AI 生成の QR コードは必ずスキャンできますか？",
+        "a": "AI のスタイル化処理で QR 構造が崩れる可能性があります。QRzone は生成後にローカルでスキャン検証を行い、失敗した場合は自動でリトライします（最大 3 回）。検証合格後も、実際にスマホでスキャンして確認することをおすすめします。"
+      },
+      "3": {
+        "q": "ログインは必要ですか？データは保存されますか？",
+        "a": "ログイン不要、データ保存も一切ありません。パラメトリックスタイルはブラウザ内で完結し、AI の API キーはあなたのブラウザの localStorage にのみ保存されます。"
+      },
+      "4": {
+        "q": "認識率を上げるには？",
+        "a": "プロンプトは具体的なほど効果的です。大きい出力サイズほど細部が豊かになります。スキャンに失敗したら、そのまま再生成してください。リトライ時は自動的に QR のコントラストを強めます。"
+      },
+      "5": {
+        "q": "API キーは安全ですか？",
+        "a": "キーはブラウザ内にのみ保存されます。リクエストは当サイトのエッジプロキシを経由して Agnes 公式 API に直接送信され、キーや生成内容は保存・記録されません。"
+      }
+    }
+  },
+  "header": {
+    "blog": "ブログ"
+  },
+  "qrcodes": {
+    "common": {
+      "correct_level": {
+        "label": "訂正レベル",
+        "desc": ""
+      }
+    },
+    "positioning": {
+      "positioning_point_type": {
+        "label": "位置決めタイプ",
+        "desc": ""
+      },
+      "positioning_point_color": {
+        "label": "位置決め色",
+        "desc": ""
+      },
+      "square": "四角",
+      "circle": "円形",
+      "planet": "惑星",
+      "rounded": "角丸四角"
+    },
+    "preset": {
+      "label": "プリセット",
+      "desc": ""
+    },
+    "a1": {
+      "title": "A1",
+      "subtitle": "基本",
+      "content_point_type": {
+        "label": "コンテンツタイプ",
+        "desc": ""
+      },
+      "content_point_scale": {
+        "label": "コンテンツスケール",
+        "desc": ""
+      },
+      "content_point_opacity": {
+        "label": "コンテンツ不透明度",
+        "desc": ""
+      },
+      "content_point_color": {
+        "label": "コンテンツ色",
+        "desc": ""
+      },
+      "square": "四角",
+      "circle": "円形"
+    },
+    "a2": {
+      "title": "A2",
+      "subtitle": "ライン変化",
+      "content_line_type": {
+        "label": "ラインタイプ",
+        "desc": ""
+      },
+      "content_point_scale": {
+        "label": "コンテンツスケール",
+        "desc": ""
+      },
+      "content_point_opacity": {
+        "label": "コンテンツ不透明度",
+        "desc": ""
+      },
+      "content_point_color": {
+        "label": "コンテンツ色",
+        "desc": ""
+      },
+      "horizontal": "水平",
+      "vertical": "垂直",
+      "interlock": "格子",
+      "radial": "放射状",
+      "tl-br": "左上—右下",
+      "tr-bl": "右上—左下",
+      "cross": "交差"
+    },
+    "c2": {
+      "title": "C2",
+      "subtitle": "1/3 ピクセルドットマトリックス",
+      "contrast": {
+        "label": "コントラスト",
+        "desc": ""
+      },
+      "brightness": {
+        "label": "明るさ",
+        "desc": ""
+      },
+      "background": {
+        "label": "背景",
+        "desc": "",
+        "button_label": "アップロード"
+      },
+      "align_type": {
+        "label": "アラインタイプ",
+        "desc": ""
+      },
+      "timing_type": {
+        "label": "タイミングタイプ",
+        "desc": ""
+      }
+    },
+    "sp1": {
+      "title": "SP-1",
+      "subtitle": "DSJ より",
+      "content_stroke_width": {
+        "label": "コンテンツ線幅",
+        "desc": ""
+      },
+      "content_x_stroke_width": {
+        "label": "Xマーク線幅",
+        "desc": ""
+      },
+      "positioning_stroke_width": {
+        "label": "位置決め線幅",
+        "desc": ""
+      },
+      "positioning_point_type": {
+        "label": "位置決めタイプ",
+        "desc": ""
+      },
+      "dsj": "DSJ",
+      "square": "四角"
+    },
+    "g1": {
+      "title": "AI 生成",
+      "subtitle": "AI アーティスティック QR コード",
+      "desc": "Agnes Image 2.5 Flash img2img | 自動スキャン検証",
+      "prompt": {
+        "label": "スタイルプロンプト",
+        "desc": "希望する画面スタイルを説明します。任意の言語で、空欄の場合はデフォルトスタイルを使用します。",
+        "placeholder": "例：サイバーパンクのネオン夜景 / 水墨画 / ゴッホの星月夜..."
+      },
+      "size": {
+        "label": "出力サイズ",
+        "desc": "サイズが大きいほど細部が豊かになりますが、生成時間も長くなります"
+      }
+    }
+  },
+  "footer": {
+    "reserve_rights": "無断転載を禁じます。"
+  },
+  "loading": {
+    "loading_msg": "読み込み中"
+  },
+  "not_found": {
+    "title": "ページが見つかりません",
+    "tagline": "申し訳ありませんが、お探しのページは見つかりませんでした。",
+    "home": "ホームに戻る"
+  },
+  "LocaleSwitcher": {
+    "label": "Label",
+    "locale": "{locale, select, zh {中文} en {English} jp {日本語} other {Unknown}}"
+  },
+  "ModeToggle": {
+    "light": "ライト",
+    "dark": "ダーク",
+    "system": "システム"
+  },
+  "qrcode_placeholder": {
+    "todo": "このスタイルは準備中です。お楽しみに。"
+  }
+}

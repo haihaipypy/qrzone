@@ -1,0 +1,57 @@
+import { Container } from "@/components/Containers";
+import Link from "next/link";
+import {
+  NextIntlClientProvider,
+  useMessages,
+  useTranslations,
+} from "next-intl";
+import LocaleSwitcher from "@/components/LocaleSwitcher";
+import { ModeToggle } from "@/components/ModeToggle";
+import pick from "lodash/pick";
+import { SectionStylesClient } from "@/app/[locale]/SectionStylesClient";
+import React from "react";
+import { TrackLink } from "@/components/TrackComponents";
+
+export function Footer() {
+  const t = useTranslations("footer");
+  const messages = useMessages();
+
+  return (
+    <div className="_border-t py-9 lg:py-12 flex flex-col mt-12">
+      <Container>
+        <div className="text-sm text-muted-foreground mb-2 flex gap-4">
+          <LocaleSwitcher />
+
+          <NextIntlClientProvider messages={pick(messages, ["ModeToggle"])}>
+            <ModeToggle />
+          </NextIntlClientProvider>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          &copy; {new Date().getFullYear()}{" "}
+          <TrackLink
+            trackValue={["author_site", "footer"]}
+            href="https://blog.1day.vip"
+            target="_blank"
+            className="border-b"
+          >
+            无辣的学习笔记
+          </TrackLink>
+          . QRzone. {t("reserve_rights")}
+        </p>
+        <p className="text-xs text-muted-foreground/60 mt-1">
+          基于开源项目{" "}
+          <a
+            href="https://github.com/latentcat/qrbtf"
+            target="_blank"
+            rel="noreferrer"
+            className="underline"
+          >
+            QRBTF
+          </a>{" "}
+          (GPL-3.0) 构建
+        </p>
+        <p className="safe-pb" />
+      </Container>
+    </div>
+  );
+}

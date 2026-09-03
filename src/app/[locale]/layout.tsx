@@ -1,0 +1,47 @@
+import type { Viewport } from "next";
+import { Inter } from "next/font/google";
+import "../globals.css";
+import { Providers } from "@/app/providers";
+import { Footer } from "@/components/Footer";
+import { LayoutHead } from "@/lib/layout_data";
+
+const inter = Inter({ subsets: ["latin"] });
+
+import { layoutViewport } from "@/lib/layout_data";
+import { Header } from "@/components/Header";
+import { NextIntlClientProvider } from "next-intl";
+import pick from "lodash/pick";
+import React from "react";
+import { getMessages } from "next-intl/server";
+import { cn } from "@/lib/utils";
+
+export { generateMetadata } from "@/lib/layout_data";
+
+export const viewport: Viewport = layoutViewport;
+
+export default async function RootLayout({
+  children,
+  params: { locale },
+}: Readonly<{
+  children: React.ReactNode;
+  params: { locale: string };
+}>) {
+  const messages = await getMessages();
+
+  return (
+    <html lang={locale} className="antialiased" suppressHydrationWarning>
+      <LayoutHead />
+      <body className={cn(inter.className, "")}>
+        <Providers>
+          <NextIntlClientProvider
+            messages={pick(messages, ["header"])}
+          >
+            <Header />
+          </NextIntlClientProvider>
+          <div className="min-h-screen flex flex-col">{children}</div>
+          <Footer />
+        </Providers>
+      </body>
+    </html>
+  );
+}
