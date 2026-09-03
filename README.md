@@ -28,9 +28,25 @@ yarn build      # 生产构建
 
 ## 部署
 
-支持任何可运行 Node.js 的平台（Vercel / EdgeOne Pages / 自托管服务器）。构建命令 `yarn build`，启动命令 `yarn start`。
+QRzone 是一个标准 Next.js 应用，使用 API Route（`/api/agnes/image`）做服务端代理，因此部署平台需支持 Node.js 运行时（不能用纯静态导出）。
 
-可选环境变量：`NEXT_PUBLIC_SITE_URL`（站点地址，用于 SEO metadata）
+### 方式一：Fork 后部署到 EdgeOne Pages（推荐，操作最少）
+
+1. 点击右上角 **Fork** 把本仓库复制到你的 GitHub 账号；
+2. 打开 [EdgeOne Pages 控制台](https://console.edgeone.ai/)，新建项目 → 选 **Connect to Git** → 授权 GitHub 并选中你 fork 的 `qrzone` 仓库；
+3. 构建配置：构建命令 `yarn build`（或 `npm run build`），框架选择 Next.js（EdgeOne 会自动识别 `.next` 输出），Node 版本 18+；
+4. 点击部署，等待完成即可获得你的专属域名。
+
+> 全程无需配置任何密钥：Agnes API Key 由每位访客在自己浏览器中填写，不经服务端存储。
+
+### 方式二：Vercel / 其他 Node 平台
+
+构建命令 `yarn build`，启动命令 `yarn start`，构建产物 `.next`，其余同方式一。
+
+## 可选环境变量
+
+- `NEXT_PUBLIC_SITE_URL`：站点地址，用于 SEO metadata（可选）。
+- **Agnes API Key 无需服务端配置**：每位用户在前端页面填写自己的 Key，仅存于浏览器 `localStorage`，经本站代理直连 Agnes，服务端不留存、也不读取任何相关环境变量。
 
 ## License
 

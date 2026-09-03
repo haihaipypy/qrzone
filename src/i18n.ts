@@ -15,6 +15,8 @@ export default getRequestConfig(async ({ locale }) => {
   const messages = deepmerge(defaultMessages, userMessages);
 
   return {
-    messages: messages,
+    locale,
+    messages,
+    timeZone: "Asia/Shanghai",
   };
 });

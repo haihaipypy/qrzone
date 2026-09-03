@@ -8,8 +8,12 @@ export function cn(...inputs: ClassValue[]) {
 
 export function useCurrentQrcodeType() {
   const pathname = usePathname();
-  const type = pathname.split("/")[2] || "g1";
-  return type;
+  const segments = pathname.split("/");
+  // usePathname 返回的是去掉 locale 前缀的路径
+  // /zh          -> "/"            -> ["", ""]            -> 首页
+  // /zh/style/g1 -> "/style/g1"    -> ["", "style", "g1"]  -> "g1"
+  if (segments.length < 3 || segments[1] !== "style") return null;
+  return segments[2];
 }
 
 interface NestedDict {
