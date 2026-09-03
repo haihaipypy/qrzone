@@ -62,7 +62,7 @@
     }
   },
   "header": {
-    "blog": "博客"
+    "github": "GitHub"
   },
   "qrcodes": {
     "common": {
@@ -198,6 +198,76 @@
         "label": "输出尺寸",
         "desc": "尺寸越大画面细节越丰富，生成时间也越长"
       }
+    },
+    "a3": {
+      "title": "A3",
+      "subtitle": "单色实心样式",
+      "content_point_type": {
+        "label": "信息点类型",
+        "desc": ""
+      },
+      "content_point_scale": {
+        "label": "信息点缩放",
+        "desc": ""
+      },
+      "content_point_opacity": {
+        "label": "信息点不透明度",
+        "desc": ""
+      },
+      "content_point_color": {
+        "label": "信息点颜色",
+        "desc": ""
+      },
+      "square": "方形",
+      "circle": "圆形"
+    },
+    "a3r": {
+      "title": "A3R",
+      "subtitle": "单色随机大小样式",
+      "content_point_type": {
+        "label": "信息点类型",
+        "desc": ""
+      },
+      "content_point_scale": {
+        "label": "信息点缩放",
+        "desc": ""
+      },
+      "content_point_opacity": {
+        "label": "信息点不透明度",
+        "desc": ""
+      },
+      "content_point_color": {
+        "label": "信息点颜色",
+        "desc": ""
+      },
+      "square": "方形",
+      "circle": "圆形"
+    },
+    "sp2": {
+      "title": "SP2",
+      "subtitle": "单色描边样式",
+      "content_stroke_width": {
+        "label": "信息点描边宽度",
+        "desc": ""
+      },
+      "content_x_stroke_width": {
+        "label": "叉号描边宽度",
+        "desc": ""
+      },
+      "positioning_stroke_width": {
+        "label": "定位点描边宽度",
+        "desc": ""
+      },
+      "positioning_point_type": {
+        "label": "定位点类型",
+        "desc": ""
+      },
+      "content_color": {
+        "label": "颜色",
+        "desc": ""
+      },
+      "dsj": "四角",
+      "square": "方形"
     }
   },
   "footer": {

@@ -62,7 +62,7 @@
     }
   },
   "header": {
-    "blog": "ブログ"
+    "github": "GitHub"
   },
   "qrcodes": {
     "common": {
@@ -198,6 +198,37 @@
         "label": "出力サイズ",
         "desc": "サイズが大きいほど細部が豊かになりますが、生成時間も長くなります"
       }
+    },
+    "a3": {
+      "title": "A3",
+      "subtitle": "単色ソリッドスタイル",
+      "content_point_type": { "label": "情報点タイプ", "desc": "" },
+      "content_point_scale": { "label": "情報点スケール", "desc": "" },
+      "content_point_opacity": { "label": "情報点不透明度", "desc": "" },
+      "content_point_color": { "label": "情報点色", "desc": "" },
+      "square": "四角",
+      "circle": "丸"
+    },
+    "a3r": {
+      "title": "A3R",
+      "subtitle": "単色ランダムサイズスタイル",
+      "content_point_type": { "label": "情報点タイプ", "desc": "" },
+      "content_point_scale": { "label": "情報点スケール", "desc": "" },
+      "content_point_opacity": { "label": "情報点不透明度", "desc": "" },
+      "content_point_color": { "label": "情報点色", "desc": "" },
+      "square": "四角",
+      "circle": "丸"
+    },
+    "sp2": {
+      "title": "SP2",
+      "subtitle": "単色ストロークスタイル",
+      "content_stroke_width": { "label": "情報点ストローク幅", "desc": "" },
+      "content_x_stroke_width": { "label": "×印ストローク幅", "desc": "" },
+      "positioning_stroke_width": { "label": "位置決めストローク幅", "desc": "" },
+      "positioning_point_type": { "label": "位置決め点类型", "desc": "" },
+      "content_color": { "label": "色", "desc": "" },
+      "dsj": "四隅",
+      "square": "四角"
     }
   },
   "footer": {

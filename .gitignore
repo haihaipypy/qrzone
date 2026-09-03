@@ -43,3 +43,9 @@ _corrupt_trash/
 yarn-install.log
 build.log
 server.log
+
+# Tencent Cloud EdgeOne
+.env
+.edgeone/*
+.tef_dist/*
+  

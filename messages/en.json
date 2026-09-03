@@ -62,7 +62,7 @@
     }
   },
   "header": {
-    "blog": "Blog"
+    "github": "GitHub"
   },
   "qrcodes": {
     "common": {
@@ -198,6 +198,37 @@
         "label": "Output size",
         "desc": "Larger sizes give richer detail but take longer to generate"
       }
+    },
+    "a3": {
+      "title": "A3",
+      "subtitle": "Single-color solid style",
+      "content_point_type": { "label": "Content point type", "desc": "" },
+      "content_point_scale": { "label": "Content point scale", "desc": "" },
+      "content_point_opacity": { "label": "Content point opacity", "desc": "" },
+      "content_point_color": { "label": "Content point color", "desc": "" },
+      "square": "Square",
+      "circle": "Circle"
+    },
+    "a3r": {
+      "title": "A3R",
+      "subtitle": "Single-color random-size style",
+      "content_point_type": { "label": "Content point type", "desc": "" },
+      "content_point_scale": { "label": "Content point scale", "desc": "" },
+      "content_point_opacity": { "label": "Content point opacity", "desc": "" },
+      "content_point_color": { "label": "Content point color", "desc": "" },
+      "square": "Square",
+      "circle": "Circle"
+    },
+    "sp2": {
+      "title": "SP2",
+      "subtitle": "Single-color stroke style",
+      "content_stroke_width": { "label": "Content stroke width", "desc": "" },
+      "content_x_stroke_width": { "label": "X-mark stroke width", "desc": "" },
+      "positioning_stroke_width": { "label": "Positioning stroke width", "desc": "" },
+      "positioning_point_type": { "label": "Positioning point type", "desc": "" },
+      "content_color": { "label": "Color", "desc": "" },
+      "dsj": "Four corners",
+      "square": "Square"
     }
   },
   "footer": {

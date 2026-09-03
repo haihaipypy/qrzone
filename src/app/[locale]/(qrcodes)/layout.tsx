@@ -1,36 +1,31 @@
+"use client";
+
 import { SectionHero } from "@/app/[locale]/SectionHero";
 import { SectionStyles } from "@/app/[locale]/SectionStyles";
-import { SectionParams } from "@/app/[locale]/SectionParams";
 import { SectionQA } from "@/app/[locale]/SectionQA";
-import {
-  Container,
-  SplitLeft,
-  SplitRight,
-  SplitView,
-} from "@/components/Containers";
+import { useCurrentQrcodeType } from "@/lib/utils";
 
 export default function RootLayout({
   children,
-  params: { locale },
 }: Readonly<{
   children: React.ReactNode;
-  params: { locale: string };
 }>) {
-  return (
-    <div>
-      <SectionHero />
-      <SectionStyles />
-      {children}
-      <Container>
-        <SplitView className="gap-x-9 gap-y-12 mt-12">
-          <SplitLeft className="flex flex-col gap-12">
-            <SectionQA />
-          </SplitLeft>
-          <SplitRight>
-            <SectionParams />
-          </SplitRight>
-        </SplitView>
-      </Container>
-    </div>
-  );
+  const currentQrcodeType = useCurrentQrcodeType();
+  // 首页（无样式路由）只显示 Hero + Styles + QA，不渲染右侧参数面板
+  // 样式页（如 /zh/style/a1）和 g1 首页（/zh）都展示 children（具体内容）
+  const isHome = !currentQrcodeType;
+
+  if (isHome) {
+    return (
+      <div>
+        <SectionHero />
+        <SectionStyles />
+        <div className="mt-12">
+          <SectionQA />
+        </div>
+      </div>
+    );
+  }
+
+  return <div>{children}</div>;
 }

@@ -10,7 +10,7 @@ import { Link } from "@/navigation";
 import { Label } from "@/components/ui/label";
 import { useTranslations } from "next-intl";
 import { Container } from "@/components/Containers";
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDraggable } from "react-use-draggable-scroll";
 import { TrackLink } from "@/components/TrackComponents";
 
@@ -24,12 +24,51 @@ export function SectionStylesClient() {
     applyRubberBandEffect: true, // activate rubber band effect
   });
 
+  // 滚动进度条 0~1
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [scrollMetrics, setScrollMetrics] = useState({
+    itemWidth: 0,
+    containerWidth: 0,
+    visibleCount: 0,
+  });
+
+  const updateProgress = () => {
+    const el = ref.current as unknown as HTMLDivElement;
+    if (!el) return;
+    const max = el.scrollWidth - el.clientWidth;
+    const ratio = max > 0 ? Math.min(1, Math.max(0, el.scrollLeft / max)) : 0;
+    setScrollProgress(ratio);
+    const first = el.querySelector("[data-style-card]") as HTMLElement | null;
+    const itemW = first ? first.getBoundingClientRect().width : 0;
+    const visible = itemW > 0 ? Math.max(1, Math.round(el.clientWidth / itemW)) : 0;
+    setScrollMetrics({
+      itemWidth: itemW,
+      containerWidth: el.clientWidth,
+      visibleCount: visible,
+    });
+  };
+
+  useEffect(() => {
+    const el = ref.current as unknown as HTMLDivElement;
+    if (!el) return;
+    updateProgress();
+    el.addEventListener("scroll", updateProgress, { passive: true });
+    const ro = new ResizeObserver(updateProgress);
+    ro.observe(el);
+    return () => {
+      el.removeEventListener("scroll", updateProgress);
+      ro.disconnect();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const render = (item: QrStyleItemProps, index: number) => {
     const itemPath = item.id === "g1" ? "/" : `/style/${item.id}`;
     const isActive = currentQrcodeType === item.id;
     return (
       <div
         key={"qrcode_style_" + index}
+        data-style-card
         className={cn(
           "snap-start pl-6 -ml-3 sm:pl-0 sm:ml-0 transition-opacity",
           isActive ? "" : "dark:opacity-70",
@@ -82,6 +121,14 @@ export function SectionStylesClient() {
     );
   };
 
+  const total = qrStyleList.length;
+  // 进度条 thumb 宽度 = 可见项数 / 总数；只在需要滚动时显示
+  const needScroll = total > scrollMetrics.visibleCount && scrollMetrics.visibleCount > 0;
+  const thumbRatio = needScroll ? scrollMetrics.visibleCount / total : 1;
+  const thumbWidthPct = Math.max(0.08, Math.min(1, thumbRatio)) * 100;
+  const trackWidthPct = 100;
+  const thumbLeftPct = (1 - thumbRatio) * 100 * scrollProgress;
+
   return (
     <div className="mt-9">
       <Container>
@@ -112,6 +159,27 @@ export function SectionStylesClient() {
           </div>
         </div>
       </div>
+
+      {/* 自定义进度条：可视化已滚动进度，方便用户知道还有更多 */}
+      <Container>
+        <div className="mt-3 max-w-5xl mx-auto px-6 sm:px-0 lg:px-12">
+          <div
+            className="relative h-1 rounded-full bg-foreground/10 overflow-hidden"
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={Math.round(scrollProgress * 100)}
+          >
+            <div
+              className="absolute top-0 h-full rounded-full bg-foreground/60 transition-[left,width] duration-150 ease-out"
+              style={{
+                left: `${thumbLeftPct}%`,
+                width: `${thumbWidthPct}%`,
+              }}
+            />
+          </div>
+        </div>
+      </Container>
     </div>
   );
 }

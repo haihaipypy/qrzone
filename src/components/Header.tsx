@@ -260,8 +260,8 @@ export function Header() {
   const t = useTranslations("header");
   const headerLinks = [
     {
-      name: t("blog"),
-      href: "https://blog.1day.vip",
+      name: t("github"),
+      href: "https://github.com/haihaipypy/qrzone",
       target: "_blank",
     },
   ];
