@@ -57,6 +57,8 @@ export interface QrcodeGeneratorProps<P extends {}>
   params: CommonControlProps<P>[];
   defaultPreset: string;
   desc?: string;
+  // 单页生成器（首页）无 /style/{id} 路由，用此 prop 指定下载文件名
+  styleId?: string;
 }
 
 export function QrcodeGenerator<P extends {}>(props: QrcodeGeneratorProps<P>) {
@@ -81,7 +83,8 @@ export function QrcodeGenerator<P extends {}>(props: QrcodeGeneratorProps<P>) {
 
   // Download
   const qrcodeWrapperRef = useRef<HTMLDivElement | null>(null);
-  const currentQrcodeType = useCurrentQrcodeType();
+  const pathStyle = useCurrentQrcodeType();
+  const effectiveStyleId = props.styleId ?? pathStyle;
 
   // Agnes API Key（仅保存在浏览器 localStorage）
   const [apiKey, setApiKeyState] = useState("");
@@ -243,7 +246,7 @@ export function QrcodeGenerator<P extends {}>(props: QrcodeGeneratorProps<P>) {
                           onClick={() => {
                             qrcodeWrapperRef.current &&
                               handler({
-                                name: currentQrcodeType,
+                                name: effectiveStyleId,
                                 wrapper: qrcodeWrapperRef.current,
                                 params: componentProps,
                               });

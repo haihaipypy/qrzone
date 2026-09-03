@@ -40,7 +40,7 @@ export function SectionQA() {
   const t = useTranslations("index.qa");
 
   return (
-    <div className="">
+    <Container>
       <SectionTitle title={t("title")} subtitle={t("subtitle")} />
       <div className="mt-6 _border-t">
         <Accordion type="single" collapsible>
@@ -52,6 +52,6 @@ export function SectionQA() {
           ))}
         </Accordion>
       </div>
-    </div>
+    </Container>
   );
 }
