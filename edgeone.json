@@ -6,7 +6,7 @@
     {
       "source": "/",
       "destination": "/zh/",
-      "status": 302
+      "statusCode": 302
     }
   ],
   "rewrites": [
