@@ -1,6 +1,6 @@
 # QRzone
 
-AI & 参数化二维码生成器。作者：[无辣的学习笔记](https://blog.1day.vip)。
+AI & 参数化二维码生成器。作者：[无辣](https://blog.1day.vip)。
 
 <img src="public/assets/qrcodes/g1.png" alt="QRzone" width="360">
 
