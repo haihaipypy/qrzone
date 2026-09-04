@@ -1,0 +1,30 @@
+{
+  "buildCommand": "yarn build",
+  "installCommand": "yarn install",
+  "outputDirectory": ".next",
+  "rewrites": [
+    {
+      "source": "/_next/*",
+      "destination": "/_next/:splat"
+    },
+    {
+      "source": "/assets/*",
+      "destination": "/assets/:splat"
+    },
+    {
+      "source": "/api/*",
+      "destination": "/api/:splat"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/_next/static/*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ]
+}
