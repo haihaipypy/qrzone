@@ -14,6 +14,30 @@
     {
       "source": "/api/*",
       "destination": "/api/:splat"
+    },
+    {
+      "source": "/zh/_next/*",
+      "destination": "/_next/:splat"
+    },
+    {
+      "source": "/en/_next/*",
+      "destination": "/_next/:splat"
+    },
+    {
+      "source": "/jp/_next/*",
+      "destination": "/_next/:splat"
+    },
+    {
+      "source": "/zh/assets/*",
+      "destination": "/assets/:splat"
+    },
+    {
+      "source": "/en/assets/*",
+      "destination": "/assets/:splat"
+    },
+    {
+      "source": "/jp/assets/*",
+      "destination": "/assets/:splat"
     }
   ],
   "headers": [
