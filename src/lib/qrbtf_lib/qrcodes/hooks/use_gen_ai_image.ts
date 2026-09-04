@@ -33,7 +33,7 @@ export interface GenResult {
 /** 把 URL 编码为标准二维码矩阵（不含静区，border:0，typeNumber 计算正确） */
 function buildQrMatrix(text: string): number[][] {
   const [matrix] = encode(text);
-  return matrix;
+  return matrix.map((row) => row.map((v) => (v ? 1 : 0)));
 }
 
 /** 标准黑白二维码 PNG（用于兜底，必然可扫） */

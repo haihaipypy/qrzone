@@ -246,7 +246,7 @@ export function QrcodeGenerator<P extends {}>(props: QrcodeGeneratorProps<P>) {
                           onClick={() => {
                             qrcodeWrapperRef.current &&
                               handler({
-                                name: effectiveStyleId,
+                                name: effectiveStyleId ?? "qr",
                                 wrapper: qrcodeWrapperRef.current,
                                 params: componentProps,
                               });
