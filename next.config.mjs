@@ -14,6 +14,9 @@ const nextConfig = {
   // Cloudflare Pages 走纯静态导出；EdgeOne Pages 保持默认 Next.js 构建
   output: isStaticExport ? "export" : undefined,
   distDir: isStaticExport ? "dist" : ".next",
+  // 静态导出时强制末尾斜杠：Next 会生成 zh/index.html 而非 zh.html，
+  // 这样 /zh/（带斜杠）可直接访问，与站内链接、根重定向保持一致。
+  trailingSlash: isStaticExport ? true : undefined,
   images: isStaticExport ? { unoptimized: true } : undefined,
   pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
   webpack: (config) => {
