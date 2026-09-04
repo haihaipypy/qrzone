@@ -188,7 +188,7 @@
     "g1": {
       "title": "AI 生成",
       "subtitle": "AI 艺术化二维码",
-      "desc": "Agnes Image 2.5 Flash 图生图 | 生成后自动扫码校验",
+      "desc": "Agnes 文生艺术背景图 + 本地融合 | 生成后自动扫码校验",
       "prompt": {
         "label": "风格提示词",
         "desc": "描述你想要的画面风格，任意语言，留空则使用默认风格。",

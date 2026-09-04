@@ -34,8 +34,6 @@ import { qrbtfModuleSp2, QrbtfRendererSp2Props } from "@/lib/qrbtf_lib/qrcodes/s
 import { useSp2Params } from "@/lib/qrbtf_lib/qrcodes/sp2_config";
 import { qrbtfModuleA3, QrbtfRendererA3Props } from "@/lib/qrbtf_lib/qrcodes/a3";
 import { useA3Params } from "@/lib/qrbtf_lib/qrcodes/a3_config";
-import { qrbtfModuleA3r, QrbtfRendererA3rProps } from "@/lib/qrbtf_lib/qrcodes/a3r";
-import { useA3rParams } from "@/lib/qrbtf_lib/qrcodes/a3r_config";
 
 // —— 每个风格的生成器包装组件（与 /style/{id} 页面等价，但由状态切换渲染） ——
 function G1Gen() {
@@ -179,20 +177,6 @@ function A2cGen() {
     />
   );
 }
-function A3rGen() {
-  const t = useTranslations("qrcodes.a3r");
-  const { params } = useA3rParams();
-  return (
-    <QrcodeGeneratorWithProvider<QrbtfRendererA3rProps>
-      styleId="a3r"
-      title={t("title")}
-      subtitle={t("subtitle")}
-      qrcodeModule={qrbtfModuleA3r}
-      params={params}
-      defaultPreset="a3r"
-    />
-  );
-}
 
 const styleRegistry: Record<string, React.ComponentType> = {
   g1: G1Gen,
@@ -205,7 +189,6 @@ const styleRegistry: Record<string, React.ComponentType> = {
   a1p: A1pGen,
   a3: A3Gen,
   a2c: A2cGen,
-  a3r: A3rGen,
 };
 
 export function HomeGenerator() {

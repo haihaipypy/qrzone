@@ -7,52 +7,51 @@ import { useAtom } from "jotai/index";
 import { urlAtom } from "@/lib/states";
 import { toast } from "sonner";
 import { trackEvent } from "@/components/TrackComponents";
+import { BrowserQRCodeReader } from "@zxing/browser";
 
 export function ScanButton(props: { name: string }) {
   const scanRef = useRef<HTMLInputElement>(null);
+  const readerRef = useRef<BrowserQRCodeReader | null>(null);
   const [url, setUrl] = useAtom(urlAtom);
 
-  // 准备扫描库、挂上监听函数，返回取消监听的方法
   const prepareScan = async () => {
-    // 这样做的目的是，在页面加载完后加载扫描模块，因为不是每个人都会用到这个功能，延迟加载
-    const Html5Qrcode = await import("html5-qrcode").then(
-      (module) => module.Html5Qrcode,
-    );
-    const html5QrCode = new Html5Qrcode(/* element id */ "qr-input-file");
-
-    // 挂在按钮上的监听函数
     const onFileChange = () => {
-      // react 相关的非空判定
-      if (!scanRef.current) return;
-      if (!scanRef.current?.files) return;
-      if (scanRef.current?.files?.length == 0) return;
-
-      // 获取文件
+      if (!scanRef.current?.files || scanRef.current.files.length === 0) return;
       const imageFile = scanRef.current.files[0];
+      const objectUrl = URL.createObjectURL(imageFile);
 
-      // 执行扫描
-      html5QrCode
-        .scanFile(imageFile, true)
-        .then((decodedText) => {
-          // 成功后设置 url，蹦出 success toast
-          setUrl(decodedText);
-          toast.success("Scan succeeded");
+      if (!readerRef.current) {
+        readerRef.current = new BrowserQRCodeReader();
+      }
+
+      readerRef.current
+        .decodeFromImageUrl(objectUrl)
+        .then((result) => {
+          const text = result.getText();
+          setUrl(text);
+          toast.success("识别成功，已填入网址");
         })
         .catch((err) => {
-          // 失败时蹦出 error toast
-          console.log(`Scan error: ${err}`);
-          toast.error("Scan error");
+          // 区分两类失败，给出可读提示
+          const msg = String(err?.message ?? err ?? "");
+          console.error(`Scan error: ${msg}`);
+          if (/not\s*found|no qr|cannot|fail to|not detected/i.test(msg)) {
+            toast.error("没能识别到二维码，请换一张清晰的标准二维码图片");
+          } else {
+            toast.error("未能识别到二维码，请换一张清晰的标准二维码图片");
+          }
+        })
+        .finally(() => {
+          URL.revokeObjectURL(objectUrl);
         });
     };
 
-    // 按钮变化时执行监听
     scanRef.current?.addEventListener("change", onFileChange);
-
-    // 返回取消监听的函数，注意，是一个封装在 () => (() => void) 里的函数
-    return () => scanRef.current?.removeEventListener("change", onFileChange);
+    return () => {
+      scanRef.current?.removeEventListener("change", onFileChange);
+    };
   };
 
-  // 在 useEffect 的生命周期中挂上监听和取消监听
   useEffect(() => {
     let removeListener: () => void = () => {};
     prepareScan().then((f) => (removeListener = f));

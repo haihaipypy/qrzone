@@ -177,7 +177,7 @@ export function QrcodeGenerator<P extends {}>(props: QrcodeGeneratorProps<P>) {
                     <Label className="flex items-center justify-between mb-1.5">
                       Agnes API Key
                       <a
-                        href="https://www.agnes-ai.com/zh-Hans/docs/agnes-image-25-flash"
+                        href="https://platform.agnes-ai.com/settings/apiKeys"
                         target="_blank"
                         rel="noreferrer"
                         className="text-xs opacity-60 underline hover:opacity-100"

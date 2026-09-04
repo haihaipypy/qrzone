@@ -221,7 +221,7 @@ export function ParamPromptControl<P extends FieldValues>(
         <ParamLabel label={props.label} />
         <div className="flex">
           <Badge
-            className="rounded-md hover:bg-accent cursor-pointer"
+            className="rounded-md hover:bg-accent cursor-pointer whitespace-nowrap"
             variant="outline"
             onClick={handleRandomize}
           >

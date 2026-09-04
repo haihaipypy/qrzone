@@ -43,6 +43,12 @@ export async function POST(req: Request) {
   }
 
   const text = await upstream.text();
+  if (!upstream.ok) {
+    // 记录上游真实返回，便于排查（错误响应体通常较短，截断避免刷屏）
+    console.error(
+      `[agnes] upstream HTTP ${upstream.status}: ${text.slice(0, 500)}`,
+    );
+  }
   return new Response(text, {
     status: upstream.status,
     headers: { "Content-Type": "application/json" },

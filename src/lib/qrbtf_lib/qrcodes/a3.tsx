@@ -2,15 +2,11 @@
 
 import React, { useMemo } from "react";
 import { QRPointType, encode } from "../encoder";
-import { sq25 } from "@/lib/qrbtf_lib/constants";
 import { QrbtfRendererPositioningProps } from "./param/position";
 import { QrbtfModule, QrbtfRendererCommonProps, RendererProps } from "./param";
 import { A3PresetKeys, A3Presets } from "./a3_config";
-import { rand } from "@/lib/utils";
 
 export interface RenderA3OwnProps {
-  content_point_type: "square" | "circle";
-  content_point_scale: number;
   content_point_opacity: number;
   content_point_color: string;
 }
@@ -19,6 +15,25 @@ export type QrbtfRendererA3Props = RenderA3OwnProps &
   QrbtfRendererPositioningProps &
   QrbtfRendererCommonProps;
 
+// 基于 URL 的确定性伪随机：同一二维码输出稳定（可复现、可扫、刷新不抖），不同 URL 呈现不同随机分布
+function hashStr(s: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+function mulberry32(a: number) {
+  return function () {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
 function QrbtfRendererA3(props: RendererProps<QrbtfRendererA3Props>) {
   const [table, typeTable] = useMemo(
     () => encode(props.url, { ecc: props.correct_level }),
@@ -26,141 +41,129 @@ function QrbtfRendererA3(props: RendererProps<QrbtfRendererA3Props>) {
   );
   const points = useMemo(() => {
     const points: React.ReactNode[] = [];
-
-    const contentPointSize = props.content_point_scale * 1.01;
-    const contentPointSizeHalf = contentPointSize / 2;
-    const contentPointOffset = (1 - contentPointSize) / 2;
-
-    const positioningPointSize = contentPointSize < 1 ? 1 : contentPointSize;
+    const rng = mulberry32(hashStr(props.url || "qrzone"));
+    const posType = props.positioning_point_type;
+    const contentColor = props.content_point_color;
+    const contentOpacity = props.content_point_opacity;
+    const posColor = props.positioning_point_color;
 
     let id = 0;
 
-    for (let y = 0; y < table.length; y++) {
-      for (let x = 0; x < table.length; x++) {
+    for (let x = 0; x < table.length; x++) {
+      for (let y = 0; y < table.length; y++) {
         if (!table[x][y]) continue;
-        switch (typeTable[x][y]) {
-          case QRPointType.POS_CENTER:
-            if (props.positioning_point_type === "square") {
-              points.push(
-                <rect
-                  key={id++}
-                  fill={props.positioning_point_color}
-                  x={x + 0.5 - 1.5}
-                  y={y + 0.5 - 1.5}
-                  width={3}
-                  height={3}
-                />,
-              );
-              points.push(
-                <rect
-                  key={id++}
-                  fill="none"
-                  strokeWidth="1"
-                  stroke={props.positioning_point_color}
-                  x={x + 0.5 - 3}
-                  y={y + 0.5 - 3}
-                  width={6}
-                  height={6}
-                />,
-              );
-            } else if (props.positioning_point_type === "circle") {
+        const tt = typeTable[x][y];
+        if (
+          tt === QRPointType.ALIGN_CENTER ||
+          tt === QRPointType.ALIGN_OTHER ||
+          tt === QRPointType.TIMING
+        ) {
+          points.push(
+            <circle
+              key={id++}
+              opacity={contentOpacity}
+              r={0.5}
+              fill={contentColor}
+              cx={x + 0.5}
+              cy={y + 0.5}
+            />,
+          );
+        } else if (tt === QRPointType.POS_CENTER) {
+          if (posType === "circle") {
+            points.push(
+              <circle key={id++} fill={posColor} cx={x + 0.5} cy={y + 0.5} r={1.5} />,
+            );
+            points.push(
+              <circle
+                key={id++}
+                fill="none"
+                strokeWidth="1"
+                stroke={posColor}
+                cx={x + 0.5}
+                cy={y + 0.5}
+                r={3}
+              />,
+            );
+          } else if (posType === "planet") {
+            points.push(
+              <circle key={id++} fill={posColor} cx={x + 0.5} cy={y + 0.5} r={1.5} />,
+            );
+            points.push(
+              <circle
+                key={id++}
+                fill="none"
+                strokeWidth="0.15"
+                strokeDasharray="0.5,0.5"
+                stroke={posColor}
+                cx={x + 0.5}
+                cy={y + 0.5}
+                r={3}
+              />,
+            );
+            for (const w of [3, -3]) {
               points.push(
                 <circle
                   key={id++}
-                  fill={props.positioning_point_color}
-                  cx={x + 0.5}
+                  fill={posColor}
+                  cx={x + w + 0.5}
                   cy={y + 0.5}
-                  r={1.5}
-                />,
-              );
-              points.push(
-                <circle
-                  key={id++}
-                  fill="none"
-                  strokeWidth="1"
-                  stroke={props.positioning_point_color}
-                  cx={x + 0.5}
-                  cy={y + 0.5}
-                  r={3}
-                />,
-              );
-            } else if (props.positioning_point_type === "rounded") {
-              points.push(
-                <circle
-                  key={id++}
-                  fill={props.positioning_point_color}
-                  cx={x + 0.5}
-                  cy={y + 0.5}
-                  r={1.5}
-                />,
-              );
-              points.push(
-                <path
-                  key={id++}
-                  d={sq25}
-                  stroke={props.positioning_point_color}
-                  strokeWidth={(100 / 6) * (1 - (1 - contentPointSize) * 0.75)}
-                  fill="none"
-                  transform={
-                    "translate(" +
-                    String(x - 2.5) +
-                    "," +
-                    String(y - 2.5) +
-                    ") " +
-                    "scale(" +
-                    String(6 / 100) +
-                    "," +
-                    String(6 / 100) +
-                    ")"
-                  }
+                  r={0.5}
                 />,
               );
             }
-            break;
-          case QRPointType.POS_OTHER:
-            break;
-          case QRPointType.ALIGN_CENTER:
-          case QRPointType.ALIGN_OTHER:
-          case QRPointType.TIMING:
-          default:
-            // a3: 单色（一种填色），所有信息点统一使用 content_point_color
-            const size = contentPointSize;
-            const offset = contentPointOffset;
-            if (props.content_point_type === "square") {
-              points.push(
-                <rect
-                  opacity={props.content_point_opacity}
-                  width={size}
-                  height={size}
-                  key={id++}
-                  fill={props.content_point_color}
-                  x={x + offset}
-                  y={y + offset}
-                />,
-              );
-            } else {
+            for (const h of [3, -3]) {
               points.push(
                 <circle
-                  opacity={props.content_point_opacity}
-                  r={size / 2}
                   key={id++}
-                  fill={props.content_point_color}
+                  fill={posColor}
                   cx={x + 0.5}
-                  cy={y + 0.5}
+                  cy={y + h + 0.5}
+                  r={0.5}
                 />,
               );
             }
+          } else {
+            // square / rounded 都按方块处理
+            points.push(
+              <rect key={id++} fill={posColor} x={x} y={y} width={1} height={1} />,
+            );
+          }
+        } else if (tt === QRPointType.POS_OTHER) {
+          points.push(
+            <rect
+              key={id++}
+              fill={posColor}
+              x={x}
+              y={y}
+              width={1}
+              height={1}
+              rx={posType === "rounded" ? 0.3 : 0}
+            />,
+          );
+        } else {
+          // 普通信息点：A3 经典 = 随机半径圆点（混乱与秩序）
+          const r = 0.5 * (0.33 + rng() * (1.0 - 0.33));
+          points.push(
+            <circle
+              key={id++}
+              opacity={contentOpacity}
+              fill={contentColor}
+              cx={x + 0.5}
+              cy={y + 0.5}
+              r={r}
+            />,
+          );
         }
       }
     }
     return points;
   }, [
-    props.content_point_scale,
-    props.positioning_point_type,
-    props.content_point_type,
-    props.positioning_point_color,
+    props.url,
+    props.correct_level,
     props.content_point_opacity,
     props.content_point_color,
+    props.positioning_point_type,
+    props.positioning_point_color,
     table,
     typeTable,
   ]);

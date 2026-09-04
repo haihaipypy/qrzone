@@ -1,68 +1,18 @@
 import { useTranslations } from "next-intl";
+import { QrbtfRendererSp2Props } from "./sp2";
 import { CommonControlProps } from "./param";
 import { useCommonParams } from "./param/common";
-import { QrbtfRendererSp2Props } from "./sp2";
 
 export type Sp2PresetKeys = "sp2";
 
 export const Sp2Presets: Record<Sp2PresetKeys, QrbtfRendererSp2Props> = {
   sp2: {
     correct_level: "medium",
-    content_stroke_width: 0.7,
-    content_x_stroke_width: 0.7,
-    positioning_stroke_width: 0.9,
-    positioning_point_type: "dsj",
-    content_color: "#000000",
   },
 };
 
 export function useSp2Params() {
-  const t = useTranslations("qrcodes.sp2");
   const { commonParams } = useCommonParams();
-
-  const params: CommonControlProps<QrbtfRendererSp2Props>[] = [
-    ...commonParams,
-    {
-      type: "number",
-      name: "content_stroke_width",
-      label: t("content_stroke_width.label"),
-      desc: t("content_stroke_width.desc"),
-      config: { min: 0, max: 1, step: 0.01 },
-    },
-    {
-      type: "number",
-      name: "content_x_stroke_width",
-      label: t("content_x_stroke_width.label"),
-      desc: t("content_x_stroke_width.desc"),
-      config: { min: 0, max: 1, step: 0.01 },
-    },
-    {
-      type: "number",
-      name: "positioning_stroke_width",
-      label: t("positioning_stroke_width.label"),
-      desc: t("positioning_stroke_width.desc"),
-      config: { min: 0, max: 1, step: 0.01 },
-    },
-    {
-      type: "select",
-      name: "positioning_point_type",
-      label: t("positioning_point_type.label"),
-      desc: t("positioning_point_type.desc"),
-      config: {
-        values: [
-          { value: "dsj", label: t("dsj") },
-          { value: "square", label: t("square") },
-        ],
-      },
-    },
-    {
-      type: "color",
-      name: "content_color",
-      label: t("content_color.label"),
-      desc: t("content_color.desc"),
-      config: {},
-    },
-  ];
-
+  const params: CommonControlProps<QrbtfRendererSp2Props>[] = [...commonParams];
   return { params };
 }

@@ -188,7 +188,7 @@
     "g1": {
       "title": "AI Generated",
       "subtitle": "AI artistic QR code",
-      "desc": "Agnes Image 2.5 Flash img2img | Auto scan verification",
+      "desc": "Agnes text-to-image background + local fusion | Auto scan verification",
       "prompt": {
         "label": "Style prompt",
         "desc": "Describe the style you want, in any language. Leave empty for the default style.",

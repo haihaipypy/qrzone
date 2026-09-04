@@ -28,18 +28,6 @@ export function Footer() {
           </TrackLink>
           . QRzone. {t("reserve_rights")}
         </p>
-        <p className="text-xs text-muted-foreground/60 mt-1">
-          基于开源项目{" "}
-          <a
-            href="https://github.com/latentcat/qrbtf"
-            target="_blank"
-            rel="noreferrer"
-            className="underline"
-          >
-            QRBTF
-          </a>{" "}
-          (GPL-3.0) 构建
-        </p>
         <p className="safe-pb" />
       </Container>
     </div>
