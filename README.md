@@ -2,7 +2,7 @@
 
 AI & 参数化二维码生成器。作者：[无辣的学习笔记](https://blog.1day.vip)。
 
-![QRzone](public/assets/qrcodes/g1.png)
+<img src="public/assets/qrcodes/g1.png" alt="QRzone" width="360">
 
 ## 特性
 
