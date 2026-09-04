@@ -10,7 +10,11 @@
 
 import { encode } from "@/lib/qrbtf_lib/encoder";
 import { urlAtom } from "@/lib/states";
-import { AGNES_IMAGE_MODEL, getAgnesApiKey } from "@/lib/agnes";
+import {
+  AGNES_API_ENDPOINT,
+  AGNES_IMAGE_MODEL,
+  getAgnesApiKey,
+} from "@/lib/agnes";
 import { useAtomValue } from "jotai";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -324,8 +328,9 @@ async function parseError(resp: Response): Promise<string> {
 }
 
 /**
- * 调用 Agnes 代理（带重试）。Agnes 偶发 503 / 429 等临时性故障，间隔后重试通常可自愈。
- * 401 / 400 等属请求本身的问题，不重试，直接返回给上层提示。
+ * 直接调用 Agnes 图像生成接口（带重试）。Agnes 偶发 503 / 429 等临时性故障，
+ * 间隔后重试通常可自愈。401 / 400 等属请求本身的问题，不重试，直接返回给上层提示。
+ * 注意：EdgeOne Pages 按静态项目部署，不托管 /api/*，因此不走后端代理。
  */
 async function requestAgnes(body: string, apiKey: string): Promise<Response> {
   const delays = [0, 3000, 8000];
@@ -335,11 +340,11 @@ async function requestAgnes(body: string, apiKey: string): Promise<Response> {
       toast.info(`Agnes 服务暂时不可用，${delays[i] / 1000} 秒后自动重试…`);
       await new Promise((r) => setTimeout(r, delays[i]));
     }
-    const resp = await fetch("/api/agnes/image", {
+    const resp = await fetch(AGNES_API_ENDPOINT, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-agnes-key": apiKey,
+        Authorization: `Bearer ${apiKey}`,
       },
       body,
     });
