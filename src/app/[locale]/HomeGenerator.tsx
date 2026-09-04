@@ -292,14 +292,14 @@ export function HomeGenerator() {
         key={"qrcode_style_" + index}
         data-style-card
         className={cn(
-          "snap-start pl-6 -ml-3 sm:pl-0 sm:ml-0 transition-opacity",
+          "snap-start flex-none transition-opacity",
           isActive ? "" : "dark:opacity-70",
         )}
       >
         <button type="button" onClick={() => handleSelect(item.id)} className="block w-full text-left">
           <motion.div
             className={cn(
-              "relative w-[calc((100vw-(12px)*5)/2)] sm:w-[195px] rounded-2xl bg-accent/30 overflow-hidden",
+              "relative w-[calc((100%-12px)/2)] sm:w-[195px] rounded-2xl bg-accent/30 overflow-hidden",
             )}
             whileTap={{
               scale: 0.95,
@@ -350,32 +350,20 @@ export function HomeGenerator() {
               {t("subtitle")}
             </span>
           </Label>
-        </Container>
 
-        <div
-          id="style-card-scroll"
-          className="overflow-x-auto no-scrollbar snap-x sm:snap-none snap-mandatory"
-          {...events}
-          ref={scrollRef}
-        >
-          <div className="flex flex-col">
-            <div className="w-full flex flex-col items-center sm:px-6 lg:px-12">
-              <div className="w-full max-w-5xl">
-                <div className="flex sm:gap-3">
-                  <div className="w-3 shrink-0 sm:hidden" />
-
-                  {qrStyleList.map((item, index) => renderCard(item, index))}
-
-                  <div className="w-6 shrink-0" />
-                </div>
-              </div>
+          <div
+            id="style-card-scroll"
+            className="overflow-x-auto no-scrollbar snap-x sm:snap-none snap-mandatory"
+            {...events}
+            ref={scrollRef}
+          >
+            <div className="flex gap-3">
+              {qrStyleList.map((item, index) => renderCard(item, index))}
             </div>
           </div>
-        </div>
 
-        {needScroll && (
-          <Container>
-            <div className="mt-3 max-w-5xl mx-auto px-6 sm:px-0 lg:px-12">
+          {needScroll && (
+            <div className="mt-3">
               <div
                 ref={trackRef}
                 onPointerDown={onTrackPointerDown}
@@ -396,8 +384,8 @@ export function HomeGenerator() {
                 />
               </div>
             </div>
-          </Container>
-        )}
+          )}
+        </Container>
       </div>
 
       {/* 当前风格的二维码生成器（原地切换，零路由跳转） */}
