@@ -27,6 +27,14 @@ export async function generateMetadata({
       t("keywords.4"),
       t("keywords.5"),
     ],
+    manifest: "/manifest.json",
+    icons: {
+      icon: [
+        { url: "/favicon.svg", type: "image/svg+xml", sizes: "any" },
+        { url: "/favicon.ico" },
+      ],
+      apple: "/apple-touch-icon.png",
+    },
   };
 }
 
@@ -43,15 +51,7 @@ export const layoutViewport: Viewport = {
 export function LayoutHead() {
   return (
     <head>
-      <link rel="manifest" href="/manifest.json" />
-      <link
-        rel="apple-touch-icon"
-        href="/apple-touch-icon?<generated>"
-        type="image/<generated>"
-        sizes="<generated>"
-      />
       <meta content="yes" name="apple-mobile-web-app-capable" />
-      <meta name="theme-color" content="#000000" />
     </head>
   );
 }
