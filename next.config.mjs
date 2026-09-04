@@ -7,8 +7,14 @@ const withBundleAnalyzer = NextBundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
 });
 
+const isStaticExport = process.env.STATIC_EXPORT === "true";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Cloudflare Pages 走纯静态导出；EdgeOne Pages 保持默认 Next.js 构建
+  output: isStaticExport ? "export" : undefined,
+  distDir: isStaticExport ? "dist" : ".next",
+  images: isStaticExport ? { unoptimized: true } : undefined,
   pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
   webpack: (config) => {
     // https://github.com/vercel/next.js/discussions/36981

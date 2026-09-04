@@ -1,7 +1,14 @@
 {
-  "buildCommand": "yarn build",
+  "buildCommand": "STATIC_EXPORT=true yarn build",
   "installCommand": "yarn install",
-  "outputDirectory": ".next",
+  "outputDirectory": "dist",
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/zh/",
+      "status": 302
+    }
+  ],
   "rewrites": [
     {
       "source": "/_next/*",
@@ -9,34 +16,6 @@
     },
     {
       "source": "/assets/*",
-      "destination": "/assets/:splat"
-    },
-    {
-      "source": "/api/*",
-      "destination": "/api/:splat"
-    },
-    {
-      "source": "/zh/_next/*",
-      "destination": "/_next/:splat"
-    },
-    {
-      "source": "/en/_next/*",
-      "destination": "/_next/:splat"
-    },
-    {
-      "source": "/jp/_next/*",
-      "destination": "/_next/:splat"
-    },
-    {
-      "source": "/zh/assets/*",
-      "destination": "/assets/:splat"
-    },
-    {
-      "source": "/en/assets/*",
-      "destination": "/assets/:splat"
-    },
-    {
-      "source": "/jp/assets/*",
       "destination": "/assets/:splat"
     }
   ],

@@ -11,12 +11,16 @@ import { layoutViewport } from "@/lib/layout_data";
 import { Header } from "@/components/Header";
 import { NextIntlClientProvider } from "next-intl";
 import React from "react";
-import { getMessages } from "next-intl/server";
+import { getMessages, unstable_setRequestLocale } from "next-intl/server";
 import { cn } from "@/lib/utils";
 
 export { generateMetadata } from "@/lib/layout_data";
 
 export const viewport: Viewport = layoutViewport;
+
+export function generateStaticParams() {
+  return [{ locale: "zh" }, { locale: "en" }, { locale: "jp" }];
+}
 
 export default async function RootLayout({
   children,
@@ -25,6 +29,7 @@ export default async function RootLayout({
   children: React.ReactNode;
   params: { locale: string };
 }>) {
+  unstable_setRequestLocale(locale);
   const messages = await getMessages();
 
   return (

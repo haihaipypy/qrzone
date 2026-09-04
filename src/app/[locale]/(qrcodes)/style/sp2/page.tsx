@@ -1,3 +1,4 @@
+import { unstable_setRequestLocale } from "next-intl/server";
 import QrcodeGeneratorWithProvider from "@/components/QrcodeGeneratorWithProvider";
 import { useTranslations } from "next-intl";
 import {
@@ -6,7 +7,12 @@ import {
 } from "@/lib/qrbtf_lib/qrcodes/sp2";
 import { useSp2Params } from "@/lib/qrbtf_lib/qrcodes/sp2_config";
 
-export default function Page() {
+export default function Page({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
+  unstable_setRequestLocale(locale);
   const t = useTranslations("qrcodes.sp2");
   const { params } = useSp2Params();
 

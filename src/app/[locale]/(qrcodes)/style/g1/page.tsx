@@ -1,3 +1,4 @@
+import { unstable_setRequestLocale } from "next-intl/server";
 import QrcodeGeneratorWithProvider from "@/components/QrcodeGeneratorWithProvider";
 import { useTranslations } from "next-intl";
 import {
@@ -6,7 +7,12 @@ import {
 } from "@/lib/qrbtf_lib/qrcodes/g1";
 import { useG1Params } from "@/lib/qrbtf_lib/qrcodes/g1_config";
 
-export default function Page() {
+export default function Page({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
+  unstable_setRequestLocale(locale);
   const t = useTranslations("qrcodes.g1");
   const { params } = useG1Params();
 
